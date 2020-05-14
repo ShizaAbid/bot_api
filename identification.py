@@ -7,14 +7,17 @@ from langdetect import detect
 from main_model import mainmodel_func
 import string
 from entities import entity_extract
+from functions import spell_corr
 
-TfidfVec = TfidfVectorizer(tokenizer=LemNormalize,max_df = 650,stop_words = 'english')
+TfidfVec = TfidfVectorizer(tokenizer=LemNormalize,max_df = 1650,stop_words = 'english')
 
 
 def identification(user_response,sent_tokens,entity_functions,main_tok,module_tok):
+    user_response = spell_corr(user_response)
+    print(user_response)
     entity = entity_extract(user_response,entity_functions[0],entity_functions[1])
     #entit =',"Entities": {' + ",".join(map(str,entity))+'}'
-    print(entit)
+    #print(entit)
     name = user_response
     sent_tokens.append(user_response)
     tfidf = TfidfVec.fit_transform(sent_tokens)

@@ -10,7 +10,6 @@ import nltk #for nlp purpose
 import pandas as pd #use for file that we read
 import re #to handle regular expression
 from keras.models import load_model #To load model
-from keras import backend as K #to load the backend library that we are using
 from tensorflow.keras.preprocessing import sequence
 from keras.preprocessing.text import Tokenizer
 from textblob import TextBlob
@@ -39,6 +38,8 @@ from functions  import tokenizing
 #from leave import leave_func
 from identification import identification
 from functions import tok_behavior
+from functions import tokenizing_stop
+
 
 
 Stopwords = nltk.corpus.stopwords.words('english')
@@ -47,7 +48,7 @@ Stopwords = nltk.corpus.stopwords.words('english')
 #data = [sent for sent in dataset['Data']]
 
 def data_preprocessing():
-    dataset = pd.read_excel('D:\\bot\\botapi\\botapi\\dataset\\Main_dataset(1).xlsx')
+    dataset = pd.read_excel('D:\\bot\\botapi\\botapi\\dataset\\Main_dataset(temp).xlsx')
     max_words = 20000
     #HELP DESK TOKENIZER
 
@@ -102,7 +103,7 @@ def data_preprocessing():
     docs = dataset['Data']
     x_maindata = []
     for i in docs:
-        x_maindata.append(token_stems_stop(i))
+        x_maindata.append(token_stems(i))
     main_tok = tok(x_maindata)
 
     module_tok = []
@@ -200,4 +201,15 @@ def data_preprocessing():
         x_CA.append(tokenizing(i))
     CA_tok = tok(x_CA)
     capability_entities.append(CA_tok)
+
+    #SUB INTENT TOKENIZER
+    CA = CA[CA['sub_intent_two']!='overall']
+    x_CA_sub_intent = []
+    docs = CA['Data']
+    for i in docs:
+        x_CA_sub_intent.append(tokenizing_stop(i))
+    CA_sub_tok =tok(x_CA_sub_intent)
+    capability_entities.append(CA_sub_tok)
+
+    module_tok.append(capability_entities)
     return(sent_tokens,Entity,main_tok,module_tok)

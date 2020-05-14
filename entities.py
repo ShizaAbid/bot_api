@@ -151,9 +151,17 @@ def date_stopwords(text):
     stopwords = nltk.corpus.stopwords.words('english')
     tokens=[word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     filtered_sentence = []
-    for w in tokens:
-        if w not in stopwords:
-            filtered_sentence.append(w)
+    for w in range(len(tokens)):
+        if tokens[w] not in stopwords:
+            if(re.search('\d+%',tokens[w])):
+                pass
+            elif(re.search('\d+',tokens[w])):
+                if(w+1 < len(tokens)):
+                    if(re.search('%|percent',tokens[w+1])):
+                        w = w + 1
+                    else: filtered_sentence.append(tokens[w])
+                else: filtered_sentence.append(tokens[w])
+            else: filtered_sentence.append(tokens[w])
     filtered_sentence = " ".join(map(str,filtered_sentence))
     return filtered_sentence
 
@@ -175,6 +183,8 @@ def date_format(text):
         else:
             corr.append(text[token])
     string = " ".join(map(str,corr))
+    #print('Date time')
+    #print(string)
     return string
 
 
@@ -183,6 +193,8 @@ def date_func(name):
     string = date_format(name)
     stop_word = date_stopwords(name)
     date = search_dates(stop_word)
+    print('Date time')
+    print(date)
     if(date == None):
         date = ""
         return date

@@ -10,7 +10,8 @@ import joblib
 import re
 
 def behavioral_assessment_model(query,behavioral_entity,entity):
-    top_intent = 'Behavioral_Assessment'
+    top_intent = '"Assessment"'
+    sub_intent = '"Behavioral_Assessment"'
     Score = ''
     m = load_model('D:\\bot\\botapi\\botapi\\models\\Behavioral_Assesment\\Behavioral_model.h5py')
     score = model_score_LSTM_behavior(query,behavioral_entity[0],m)

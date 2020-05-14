@@ -6,13 +6,29 @@ from tensorflow.keras.preprocessing import sequence
 from nltk.tokenize import word_tokenize
 import gensim
 import string
+from spellchecker import SpellChecker
 
+spell = spell = SpellChecker()
 max_words = 20000
 stemmer= SnowballStemmer("english")
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 stopwords = nltk.corpus.stopwords.words('english')
 lemmer = nltk.stem.WordNetLemmatizer()
 
+def spell_corr(query):
+    tokens=[word.lower() for sent in nltk.sent_tokenize(query) for word in nltk.word_tokenize(sent)]
+    corr_tokens = []
+    for word in tokens:
+        misspelled = spell.unknown([word])
+        if(len(misspelled) == 0):
+            corr_tokens.append(word)
+        else:
+            for words in misspelled:
+                corr = spell.correction(words)
+                corr_tokens.append(corr)
+    print(corr_tokens)
+
+    return  (" ".join(map(str,corr_tokens)))
 
 
 def stemming(text):
@@ -76,6 +92,16 @@ def model_score_LSTM_stop(query,tokenizer,m):
     #print(score)
     return(score)
 
+def model_score_LSTM_tokenize_stop(query,tokenizer,m):
+    sen = tokenizing_stop(query)
+    sen_test = ([list(sen)])
+    print(sen_test)
+    sen_sequences = tokenizer.texts_to_sequences(sen_test)
+    sen_sequences_matrix = sequence.pad_sequences(sen_sequences,maxlen = 200)
+    score = m.predict(sen_sequences_matrix)
+    #print(score)
+    return(score)
+
 def model_score_LSTM_tokenize(query,tokenizer,m):
     sen = tokenizing(query)
     sen_test = ([list(sen)])
@@ -109,5 +135,13 @@ def LemTokens(tokens):
 
 def LemNormalize(text):
     return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
+
+def percentile_extract(query):
+    percentile = []
+    tokens=[word.lower() for sent in nltk.sent_tokenize(query) for word in nltk.word_tokenize(sent)]
+    for i in range(len(tokens)):
+        if(re.search('\d',tokens[i])):
+            percentile.append(tokens[i])
+    return percentile
 
 

@@ -52,8 +52,7 @@ def emotional_leave(name,leave_emotional_genism):
     print("Casual:",np.max(sims_c[query_doc_tf_idf]))
     if(casual>sick):
         return('"Leave_Type": "Casual Leave"')
-    else:8
-
+    else:
         return('"Leave_Type": "Sick Leave"')
 
 

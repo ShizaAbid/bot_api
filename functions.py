@@ -72,6 +72,11 @@ def tok_behavior(x):
     tok_module.fit_on_texts(x)
     return(tok_module)
 
+def tok_behavior_flex(x):
+    tok_module  = Tokenizer(num_words = 200,oov_token="<OOV>")
+    tok_module.fit_on_texts(x)
+    return(tok_module)
+
 def model_score_LSTM(query,tokenizer,m):
     sen = token_stems(query)
     sen_test = ([list(sen)])
@@ -137,11 +142,22 @@ def LemNormalize(text):
     return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
 
 def percentile_extract(query):
-    percentile = []
+    percentile = ""
     tokens=[word.lower() for sent in nltk.sent_tokenize(query) for word in nltk.word_tokenize(sent)]
+    print(tokens)
     for i in range(len(tokens)):
-        if(re.search('\d',tokens[i])):
-            percentile.append(tokens[i])
+        if(re.search('\d+',tokens[i])):
+            if(i+1 < len(tokens)):
+                if(re.search('%|percent',tokens[i+1])):
+                    percentile = tokens[i]
     return percentile
+
+def percentile_change(query):
+    entity = ""
+    if(re.search('(((above \d+( |)(%|percent))|(\d+( |)(%|percent)( and| &| or)* (above|high|more)))|(((more|higher) (then|than) \d)))',query)):
+        entity = ('"Percentile_Change":"Above"')
+    elif(re.search('(((below \d+( |)(%|percent))|(\d+( |)(%|percent)( and| &| or)* (below| low| less)))|((( less| low) (then|than) \d)))',query)):
+        entity = ('"Percentile_Change":"Below"')
+    return entity
 
 

@@ -31,7 +31,6 @@ def entity_extract(name,tok_quantity,emp_detail):
 
 
 
-
                                                             ###### TO CHECK QUANTITY ######
 
 def quantity_module(name,tok_quantity):
@@ -174,7 +173,7 @@ def date_format(text):
     text = [token.text for token in text]
     for token in range(len(text)):
         if (re.search('jan?|feb?|march|apr?|may|jun?|jul?|aug?|sep?|oct?|nov?|dec?',text[token])):
-            if(re.search('jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec',text[token])):
+            if(re.search('jan |feb |mar |apr |jun |jul |aug |sep |oct |nov |dec ',text[token])):
                 text[token]=datetime.strptime(text[token],'%b').strftime('%B')
             if(text[token-1]!='of'):
                 if(re.search('[0-9]?',text[token-2])):
@@ -183,9 +182,8 @@ def date_format(text):
         else:
             corr.append(text[token])
     string = " ".join(map(str,corr))
-    #print('Date time')
-    #print(string)
     return string
+
 
 
 def date_func(name):

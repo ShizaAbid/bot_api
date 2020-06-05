@@ -9,7 +9,7 @@ import string
 from entities import entity_extract
 from functions import spell_corr
 
-TfidfVec = TfidfVectorizer(tokenizer=LemNormalize,max_df = 1650,stop_words = 'english')
+TfidfVec = TfidfVectorizer(tokenizer=LemNormalize,max_df = 600,stop_words = 'english')
 
 
 def identification(user_response,sent_tokens,entity_functions,main_tok,module_tok):

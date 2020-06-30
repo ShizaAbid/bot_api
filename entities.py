@@ -75,6 +75,7 @@ def name_entity_extract(name,emp_detail):
     for num,sen in enumerate(name_spacy.sents):
         for ent in sen.ents:
             if ent.label_ == 'PERSON':
+                print(ent.text)
                 name_func = check_name(ent.text,emp_detail)
                 name_extract = name_func
     if(name_extract == ''):

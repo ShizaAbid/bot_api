@@ -8,7 +8,7 @@ import gensim
 import string
 from spellchecker import SpellChecker
 
-spell = spell = SpellChecker()
+spell = SpellChecker()
 max_words = 20000
 stemmer= SnowballStemmer("english")
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
@@ -30,13 +30,26 @@ def spell_corr(query):
 
     return  (" ".join(map(str,corr_tokens)))
 
+def tokenizing_org(text):
+    token = [word.lower() for t in nltk.sent_tokenize(text) for word in nltk.word_tokenize(t)]
+    filter_tok = []
+    for t in token:
+        if(re.search('[A-Za-z]',t)):
+            misspelled = spell.unknown([t])
+            if(len(misspelled) == 0):
+                filter_tok.append(t)
+            else:
+                for words in misspelled:
+                    corr = spell.correction(words)
+                    filter_tok.append(words)
+    return filter_tok
 
 def stemming(text):
     stems =[stemmer.stem(t) for t in text]
     return stems
 
 def token_stems(text):
-    tokens=tokenizing(text)
+    tokens= tokenizing_org(text)#tokenizing(text)
     stems=stemming(tokens)
     return stems
 
